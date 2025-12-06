@@ -29,3 +29,7 @@ export default function Home() {
     </main>
   );
 }
+
+// In this project we are using the sever action instead of API routes for the form submissions.
+// This is to leverage the benefits of server actions like reduced latency, improved performance, and better developer experience.
+// Hence, there are no API routes defined for authentication in this project.
