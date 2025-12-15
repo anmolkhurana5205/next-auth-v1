@@ -11,7 +11,7 @@ import { FormSuccess } from "../form-success";
 
 const LazyGridLoader = dynamic(
   () => import("react-spinners").then((mod) => mod.GridLoader),
-  { ssr: false } // Server Side Render nahi karna hai
+  { ssr: false } // Server Side Render nahi karna hai qki usme kuch problem aa rhi hai
 );
 
 export const NewVerificationForm = () => {
