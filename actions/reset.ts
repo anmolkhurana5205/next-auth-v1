@@ -26,6 +26,10 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
     };
   }
 
+  if (!existingUser.password) {
+    return { error: "OAuth users are not allowed to change or set password!" };
+  }
+
   const passwordResetToken = await generatePasswordResetToken(email);
 
   await sendPasswordResetEmail(
