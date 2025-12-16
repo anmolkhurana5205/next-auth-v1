@@ -1,7 +1,7 @@
 "use client";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -29,6 +29,8 @@ export const LoginForm = () => {
       ? "Email already in use with different provider!"
       : "";
 
+  const [showTwoFactor, setShowTwoFactor] = useState<boolean>(false);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
@@ -38,6 +40,7 @@ export const LoginForm = () => {
     defaultValues: {
       email: "",
       password: "",
+      code: "",
     },
   });
 
@@ -46,10 +49,50 @@ export const LoginForm = () => {
     setSuccess("");
     startTransition(() => {
       login(values).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
+        if (data?.error) {
+          form.reset();
+          setError(data.error);
+          if (showTwoFactor) {
+            setShowTwoFactor(false);
+            setTimeLeft(null);
+          }
+        }
+        if (data?.success) {
+          form.reset();
+          setSuccess(data.success);
+        }
+
+        if (data?.twoFactor) {
+          setShowTwoFactor(true);
+          setTimeLeft(5 * 60);
+        }
       });
+      // .catch(() => {
+      //   setError("Something went wrong");
+      // });
     });
+  };
+
+  useEffect(() => {
+    if (!showTwoFactor) return;
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev === null || prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [showTwoFactor]);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -62,61 +105,96 @@ export const LoginForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      {...field}
-                      placeholder="anmol@example.com"
-                      type="email"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      {...field}
-                      placeholder="******"
-                      type="password"
-                    />
-                  </FormControl>
-                  <Button
-                    size="sm"
-                    variant="link"
-                    asChild
-                    className="font-normal -mt-2 pl-0"
-                  >
-                    <Link href="/auth/reset" className="justify-self-start">
-                      Forgot password?
-                    </Link>
-                  </Button>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {showTwoFactor && (
+              <FormField
+                control={form.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Two Factor Code</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={
+                          isPending || (showTwoFactor && timeLeft === 0)
+                        }
+                        {...field}
+                        placeholder="123456"
+                      />
+                    </FormControl>
+                    {timeLeft !== null && (
+                      <>
+                        <p className="text-xs text-muted-foreground">
+                          Code expires in {formatTime(timeLeft)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          No. of attempts: 1
+                        </p>
+                      </>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {!showTwoFactor && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isPending}
+                          {...field}
+                          placeholder="anmol@example.com"
+                          type="email"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isPending}
+                          {...field}
+                          placeholder="******"
+                          type="password"
+                        />
+                      </FormControl>
+                      <Button
+                        size="sm"
+                        variant="link"
+                        asChild
+                        className="font-normal -mt-2 pl-0"
+                      >
+                        <Link href="/auth/reset" className="justify-self-start">
+                          Forgot password?
+                        </Link>
+                      </Button>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
           </div>
           <FormError message={error || urlError} />
           <FormSuccess message={success} />
           <Button
-            disabled={isPending}
+            disabled={isPending || (showTwoFactor && timeLeft === 0)}
             type="submit"
             className="w-full cursor-pointer"
           >
-            Login
+            {showTwoFactor ? "Confirm" : "Login"}
           </Button>
         </form>
       </Form>
