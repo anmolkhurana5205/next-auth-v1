@@ -21,6 +21,9 @@ import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { login } from "@/actions/login";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export const LoginForm = () => {
   const SearchParams = useSearchParams();
@@ -44,11 +47,14 @@ export const LoginForm = () => {
     },
   });
 
+  const router = useRouter();
+  const { update } = useSession();
+
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     setError("");
     setSuccess("");
     startTransition(() => {
-      login(values).then((data) => {
+      login(values).then(async (data) => {
         if (data?.error) {
           form.reset();
           setError(data.error);
@@ -58,8 +64,9 @@ export const LoginForm = () => {
           }
         }
         if (data?.success) {
-          form.reset();
           setSuccess(data.success);
+          await update();
+          router.push(DEFAULT_LOGIN_REDIRECT);
         }
 
         if (data?.twoFactor) {

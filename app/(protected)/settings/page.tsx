@@ -1,21 +1,31 @@
-import { auth, signOut } from "@/auth";
-import { Button } from "@/components/ui/button";
+"use client";
 
-const SettingPage = async () => {
-  const session = await auth();
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { logout } from "@/actions/logout";
+
+const SettingPage = () => {
+  const router = useRouter();
+
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.replace("/auth/login");
+    },
+  });
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div>
-      {JSON.stringify(session)}
-      <form
-        action={async () => {
-          "use server";
+      <pre>{JSON.stringify(session, null, 2)}</pre>
 
-          await signOut();
-        }}
-      >
+      <form action={logout}>
         <Button
-          size={"sm"}
+          size="sm"
           variant="destructive"
           className="cursor-pointer mt-4"
           type="submit"
