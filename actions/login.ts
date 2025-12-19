@@ -7,7 +7,6 @@ import { LoginSchema } from "@/schemas";
 import { getUserByEmail } from "@/data/user";
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { sendVerificationEmail, send2FAEmail } from "@/lib/mail";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import {
   generateVerificationToken,
   generateTwoFactorToken,

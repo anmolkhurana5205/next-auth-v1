@@ -54,29 +54,30 @@ export const LoginForm = () => {
     setError("");
     setSuccess("");
     startTransition(() => {
-      login(values).then(async (data) => {
-        if (data?.error) {
-          form.reset();
-          setError(data.error);
-          if (showTwoFactor) {
-            setShowTwoFactor(false);
-            setTimeLeft(null);
+      login(values)
+        .then(async (data) => {
+          if (data?.error) {
+            form.reset();
+            setError(data.error);
+            if (showTwoFactor) {
+              setShowTwoFactor(false);
+              setTimeLeft(null);
+            }
           }
-        }
-        if (data?.success) {
-          setSuccess(data.success);
-          await update();
-          router.push(DEFAULT_LOGIN_REDIRECT);
-        }
+          if (data?.success) {
+            setSuccess(data.success);
+            await update();
+            router.push(DEFAULT_LOGIN_REDIRECT);
+          }
 
-        if (data?.twoFactor) {
-          setShowTwoFactor(true);
-          setTimeLeft(5 * 60);
-        }
-      });
-      // .catch(() => {
-      //   setError("Something went wrong");
-      // });
+          if (data?.twoFactor) {
+            setShowTwoFactor(true);
+            setTimeLeft(5 * 60);
+          }
+        })
+        .catch(() => {
+          setError("Something went wrong");
+        });
     });
   };
 

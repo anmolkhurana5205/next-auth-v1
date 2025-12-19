@@ -1,38 +1,23 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/actions/logout";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 const SettingPage = () => {
-  const router = useRouter();
-
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated() {
-      router.replace("/auth/login");
-    },
-  });
-
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
+  const user = useCurrentUser();
 
   return (
-    <div>
-      <pre>{JSON.stringify(session, null, 2)}</pre>
-
-      <form action={logout}>
-        <Button
-          size="sm"
-          variant="destructive"
-          className="cursor-pointer mt-4"
-          type="submit"
-        >
-          Sign out
-        </Button>
-      </form>
+    <div className="bg-white p-10 rounded-xl">
+      <Button
+        size="sm"
+        variant="destructive"
+        className="cursor-pointer"
+        type="submit"
+        onClick={logout}
+      >
+        Sign out
+      </Button>
     </div>
   );
 };
