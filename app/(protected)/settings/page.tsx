@@ -30,7 +30,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UserRole } from "@prisma/client";
 
 const SettingPage = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -110,8 +109,8 @@ const SettingPage = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={UserRole.ADMIN}>Admin</SelectItem>
-                        <SelectItem value={UserRole.USER}>User</SelectItem>
+                        <SelectItem value={"ADMIN"}>Admin</SelectItem>
+                        <SelectItem value={"USER"}>User</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

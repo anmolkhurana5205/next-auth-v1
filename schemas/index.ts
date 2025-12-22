@@ -1,10 +1,9 @@
 import * as z from "zod";
-import { UserRole } from "@prisma/client";
 
 export const SettingsSchema = z.object({
   name: z.optional(z.string()),
   isTwoFactorEnabled: z.optional(z.boolean()),
-  role: z.enum([UserRole.ADMIN, UserRole.USER]),
+  role: z.enum(["ADMIN", "USER"]),
 });
 export const LoginSchema = z.object({
   email: z.string().email({
