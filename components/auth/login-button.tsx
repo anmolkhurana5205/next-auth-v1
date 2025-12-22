@@ -2,6 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { Slot } from "@radix-ui/react-slot";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { LoginForm } from "@/components/auth/login-form";
 
 interface LoginButtonProps {
   mode?: "modal" | "redirect";
@@ -19,7 +27,17 @@ export const LoginButton = ({
     router.push("/auth/login");
   };
   if (mode === "modal") {
-    return <span>TODO: Implement Modal</span>;
+    return (
+      <Dialog>
+        <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
+        <DialogContent className="p-0 w-auto bg-transparent border-none">
+          <VisuallyHidden>
+            <DialogTitle>Login</DialogTitle>
+          </VisuallyHidden>
+          <LoginForm />
+        </DialogContent>
+      </Dialog>
+    );
   }
   const Comp = asChild ? Slot : "span";
   return (
