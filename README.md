@@ -20,3 +20,10 @@ It explores both server-side and client-side authentication patterns, shows how 
 - Protected API routes and server actions
 - Reusable hooks and utilities for user and role access
 - Modern UI built with Shadcn UI
+
+<img width="1414" height="2000" alt="Add a subheading" src="https://github.com/user-attachments/assets/6ca6e4b2-4ac6-4ec5-b793-902f481a6243" />
+<img width="1414" height="2000" alt="Add a subheading (1)" src="https://github.com/user-attachments/assets/771d340c-0954-491b-9275-c6b8f0ab6e59" />
+<img width="1414" height="2000" alt="Add a subheading (2)" src="https://github.com/user-attachments/assets/7bdc38fa-3add-433d-8cfc-285213fa2634" />
+<img width="1414" height="2000" alt="Add a subheading (3)" src="https://github.com/user-attachments/assets/7692acb1-12e7-445e-b805-e00b96e8ad71" />
+
+
