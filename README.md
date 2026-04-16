@@ -3,7 +3,7 @@
 A full-featured, production-ready authentication and authorization system built with Next.js 14 and Auth.js (Next-Auth v5).
 This project demonstrates how to implement secure, scalable, and modern authentication flows using the latest Next.js App Router, server actions, middleware, and role-based access control.
 
-The application supports credentials-based authentication, OAuth social login, email verification, password recovery, two-factor authentication (2FA), and user role management, making it suitable for real-world SaaS and enterprise applications.
+The application supports credentials-based authentication, OAuth social login, email verification, password recovery, two-factor authentication, and user role management, making it suitable for real-world SaaS and enterprise applications.
 
 It explores both server-side and client-side authentication patterns, shows how to protect API routes, server actions, and pages, and provides reusable utilities and hooks for accessing the current user and role across the app.
 
