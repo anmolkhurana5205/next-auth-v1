@@ -15,7 +15,7 @@ export default function Home() {
             font.className
           )}
         >
-          🔐Auth
+          🔐AuthForge
         </h1>
         <p className="text-white text-lg">Simple authentication service</p>
         <div>
